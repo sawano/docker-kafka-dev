@@ -24,6 +24,7 @@
 
 FROM alpine:3.4
 MAINTAINER Daniel Sawano
+ENV HOME /root
 RUN apk add --no-cache \
     vim \
     bash
