@@ -113,14 +113,12 @@ RUN touch start.sh; chmod +x start.sh && \
 
 ENV KAFKA_MANAGER_VERSION 1.3.1.8
 WORKDIR /kafka-manager
-RUN apk add --no-cache openjdk8 unzip git curl && \
-    #mkdir source; cd source && \
-    #curl -LO https://github.com/yahoo/kafka-manager/archive/"$KAFKA_MANAGER_VERSION".tar.gz && \
-    #tar --strip-components=1 -xzf "$KAFKA_MANAGER_VERSION".tar.gz && \
+RUN apk add --no-cache openjdk8 unzip curl tar && \
+    mkdir source; cd source && \
+    curl -LO https://github.com/yahoo/kafka-manager/archive/"$KAFKA_MANAGER_VERSION".tar.gz && \
+    tar --strip-components=1 -xzf "$KAFKA_MANAGER_VERSION".tar.gz && \
     # Following line is a workaround for SBTs inability to download sbt-launch.jar
     mkdir -p $HOME/.sbt/launchers/0.13.9;  curl -L -o $HOME/.sbt/launchers/0.13.9/sbt-launch.jar http://dl.bintray.com/typesafe/ivy-releases/org.scala-sbt/sbt-launch/0.13.9/sbt-launch.jar && \
-    git clone --depth 1 https://github.com/yahoo/kafka-manager.git source && \
-    cd source && \
     ./sbt clean dist && \
     cp target/universal/kafka-manager-"$KAFKA_MANAGER_VERSION".zip .. && \
     cd .. && \
@@ -130,7 +128,7 @@ RUN apk add --no-cache openjdk8 unzip git curl && \
     rm -rf kafka-manager-"$KAFKA_MANAGER_VERSION"/share/doc && \
     rm -rf ~/.ivy2 && \
     rm -rf ~/.sbt && \
-    apk del openjdk8 unzip git curl
+    apk del openjdk8 unzip curl tar
 
 RUN mkdir logs
 
